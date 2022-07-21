@@ -43,6 +43,11 @@ tablasa2_df <- tablasa2_df[-1,]
 #before 2000
 tablasb2_df <- map_df(lapply(tablasb2, function(x) data.frame(lapply(x, as.character))),
                bind_rows)
+#o 
+#tablasa2_df <- data.table::rbindlist(tablasa2)
+#y
+#tablasb2_df <- data.table::rbindlist(tablasb2)
+                      
 #todos
 all_ss <- bind_rows(tablasb2_df,tablasa2_df)
 
