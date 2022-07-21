@@ -64,26 +64,48 @@ all_ss_anos <- all_ss |>
 all_ss_anos$Year <- as.numeric(all_ss_anos$Year)
 all_ss_anos$Deaths <- as.numeric(all_ss_anos$Deaths)
 all_ss_anos$Injuries <- as.numeric(all_ss_anos$Injuries)
-
 plot <- all_ss_anos |>
   group_by(Year) |> 
   summarise("Deaths" = sum(Deaths))
-View(plot)
 
-#
+plot2 <- all_ss_anos |> 
+  group_by(Year) |> 
+  summarise("Injuries" = sum(Injuries))
+
+plot3 <- bind_cols(plot,plot2) |> 
+  select(Year...1, Deaths, Injuries) |> 
+  plyr::rename(c("Year...1"="Year"))
+
+
+#plots
 vis_1<-ggplot (plot,
         aes (x = Year, y = Deaths)) + 
   geom_point()+
   labs (y="Deaths by year")
 
-vis_2 <- ggplot(data=plot, aes(x = Year, y = Deaths)) +
+vis_2<-ggplot (plot2, aes (x = Year, y = Injuries)) + 
+  geom_point()+
+  labs (y="Injuries by year")
+
+vis_3 <- ggplot(data=plot, aes(x = Year, y = Deaths)) +
   geom_point(aes(color=Deaths), alpha=0.5) + 
   labs(title="School Shootings Deaths by Year",
        subtitle="From Wikipedia dataset",
        y="Death by year", 
        color = "Deaths count")
 
+vis_4 <- ggplot(plot2, aes (x = Year, y = Injuries)) + 
+  geom_area()+
+  labs (y="Injuries by year")
 
-ggplotly(vis_2)
+
+vis_5 <- ggplot() +  
+  geom_point(data = plot3, aes (x = Year, y = Deaths, color = Deaths), col = "purple") +
+  geom_point(data = plot3, aes (x = Year, y = Injuries, color = Injuries),col = "darkblue")+
+  labs(title="School Shootings Deaths and Injuries by Year",
+       subtitle="From Wikipedia dataset",
+       y=" ", 
+       color = "Deaths count")
 
 
+plotly::ggplotly(vis_5)
